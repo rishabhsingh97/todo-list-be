@@ -1,4 +1,4 @@
-name: Deploy to EC2 🚀
+name: Deploy React App to S3
 
 on:
   push:
@@ -8,8 +8,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout current branch ✅
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up SSH key and whitelist EC2 IP address 🐻‍❄️
