@@ -23,15 +23,14 @@ jobs:
           EC2_SSH_PRIVATE_KEY: $EC2_SSH_PRIVATE_KEY
           EC2_URL: $EC2_URL
 
-      - name: Install AWS CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
+      - name: Install SSH client
+        run: sudo apt-get install -y openssh-client
 
-      - name: SSH to Private Server via Bastion
-        env:
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      - name: Configure SSH
         run: |
-          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-          ssh-add <(echo "$EC2_PRIVATE_SSH_PRIVATE_KEY")
-          ssh -A -o StrictHostKeyChecking=no -i /dev/stdin $EC2_PRIVATE_USERNAME@$EC2_PRIVATE_URL
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_PRIVATE_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H bastion-server-ip >> ~/.ssh/known_hosts
+          ssh-keyscan -H private-server-ip >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
