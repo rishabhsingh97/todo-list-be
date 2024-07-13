@@ -3,7 +3,7 @@ name: Deploy Django REST Project to EC2
 on:
   push:
     branches:
-      - main  # Change this to your branch name
+      - master
 
 jobs:
   deploy:
