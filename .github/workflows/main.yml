@@ -39,7 +39,7 @@ jobs:
         run: |
           ssh -A -o StrictHostKeyChecking=no \
               -i ~/.ssh/id_rsa \
-              -J bastion-user@bastion-server-ip \
-              private-user@private-server-ip << 'EOF'
+              -J ${{ secrets.EC2_BASTION_USERNAME }}@${{ secrets.EC2_BASTION_URL }} \
+              ${{ secrets.EC2_PRIVATE_USERNAME }}@${{ secrets.EC2_PRIVATE_URL }} << 'EOF'
               # Commands to run on the private server
               echo "Connected to private server via bastion"
