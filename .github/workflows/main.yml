@@ -1,9 +1,9 @@
-name: Deploy React App to S3
+name: Deploy Django REST Project to EC2
 
 on:
   push:
     branches:
-      - master
+      - main  # Change this to your branch name
 
 jobs:
   deploy:
@@ -12,13 +12,33 @@ jobs:
       EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
       EC2_URL: ${{ secrets.EC2_URL }}
       EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: 'ap-south-1'
+      DJANGO_PROJECT_PATH: '/home/ubuntu/my-django-project'  
+      DJANGO_SETTINGS_MODULE: 'my_project.settings.production'
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       - name: Setup SSH for EC2
         uses: omarhosny206/setup-ssh-for-ec2@v1.0.0
         with:
           EC2_SSH_PRIVATE_KEY: $EC2_SSH_PRIVATE_KEY
           EC2_URL: $EC2_URL
+
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: Deploy Django Project
+        run: |
+          ssh -o StrictHostKeyChecking=no -i $EC2_SSH_PRIVATE_KEY $EC2_USERNAME@$EC2_URL "cd $DJANGO_PROJECT_PATH && \
+                                                                                       git pull origin main && \
+                                                                                       source venv/bin/activate && \
+                                                                                       pip install -r requirements.txt && \
+                                                                                       python manage.py migrate --settings=$DJANGO_SETTINGS_MODULE && \
+                                                                                       python manage.py collectstatic --no-input --settings=$DJANGO_SETTINGS_MODULE && \
+                                                                                       sudo systemctl restart gunicorn.service"
