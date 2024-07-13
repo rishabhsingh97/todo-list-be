@@ -28,18 +28,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y awscli
 
-      - name: Deploy Django Project
+      - name: SSH to Private Server via Bastion
         env:
-          EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_SSH_PRIVATE_KEY }}
-          EC2_URL: ${{ secrets.EC2_PRIVATE_URL }}
-          EC2_USERNAME: ${{ secrets.EC2_PRIVATE_USERNAME }}
-          DJANGO_PROJECT_PATH: '/home/ubuntu/my-django-project'  
-          DJANGO_SETTINGS_MODULE: 'my_project.settings.production'
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
-          ssh -o StrictHostKeyChecking=no -i $EC2_SSH_PRIVATE_KEY $EC2_USERNAME@$EC2_URL "cd $DJANGO_PROJECT_PATH && \
-                                                                                       git pull origin main && \
-                                                                                       source venv/bin/activate && \
-                                                                                       pip install -r requirements.txt && \
-                                                                                       python manage.py migrate --settings=$DJANGO_SETTINGS_MODULE && \
-                                                                                       python manage.py collectstatic --no-input --settings=$DJANGO_SETTINGS_MODULE && \
-                                                                                       sudo systemctl restart gunicorn.service"
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          ssh-add <(echo "$EC2_PRIVATE_SSH_PRIVATE_KEY")
+          ssh -A -o StrictHostKeyChecking=no -i /dev/stdin $EC2_PRIVATE_USERNAME@$EC2_PRIVATE_URL
