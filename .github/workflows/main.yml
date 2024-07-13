@@ -9,18 +9,13 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-      EC2_URL: ${{ secrets.EC2_URL }}
-      EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: 'ap-south-1'
-      DJANGO_PROJECT_PATH: '/home/ubuntu/my-django-project'  
-      DJANGO_SETTINGS_MODULE: 'my_project.settings.production'
+      EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_BASTION_SSH_PRIVATE_KEY }}
+      EC2_URL: ${{ secrets.EC2_BASTION_URL }}
+      EC2_USERNAME: ${{ secrets.EC2_BASTION_USERNAME }}
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup SSH for EC2
         uses: omarhosny206/setup-ssh-for-ec2@v1.0.0
@@ -34,6 +29,12 @@ jobs:
           sudo apt-get install -y awscli
 
       - name: Deploy Django Project
+        env:
+          EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_SSH_PRIVATE_KEY }}
+          EC2_URL: ${{ secrets.EC2_PRIVATE_URL }}
+          EC2_USERNAME: ${{ secrets.EC2_PRIVATE_USERNAME }}
+          DJANGO_PROJECT_PATH: '/home/ubuntu/my-django-project'  
+          DJANGO_SETTINGS_MODULE: 'my_project.settings.production'
         run: |
           ssh -o StrictHostKeyChecking=no -i $EC2_SSH_PRIVATE_KEY $EC2_USERNAME@$EC2_URL "cd $DJANGO_PROJECT_PATH && \
                                                                                        git pull origin main && \
