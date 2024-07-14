@@ -42,7 +42,7 @@ jobs:
               -J ${{ secrets.EC2_BASTION_USERNAME }}@${{ secrets.EC2_BASTION_URL }} \
               ${{ secrets.EC2_PRIVATE_USERNAME }}@${{ secrets.EC2_PRIVATE_URL }} << 'EOF'
               # Commands to run on the private server
-              cd /app
+              cd app/todo-list-be
               git pull origin master            
               source venv/bin/activate          
               pip install -r requirements.txt   
