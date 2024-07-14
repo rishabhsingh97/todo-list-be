@@ -15,7 +15,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost', 
     '127.0.0.1', 
-    'todo-list-load-balancer-1219772498.us-east-1.elb.amazonaws.com'
+    'todo-list-load-balancer-1219772498.us-east-1.elb.amazonaws.com',
+    '3.208.236.57'
 ]
 
 
