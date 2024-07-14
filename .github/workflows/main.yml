@@ -45,7 +45,7 @@ jobs:
               cd app/todo-list-be
               sudo git pull origin master            
               source venv/bin/activate          
-              sudo pip install -r requirements.txt   
+              pip install -r requirements.txt   
               python3 manage.py migrate          
               python3 manage.py collectstatic --no-input
               sudo systemctl restart gunicorn   
