@@ -127,8 +127,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173', 
-    'http://todo-list-load-balancer-1292925265.ap-south-1.elb.amazonaws.com',
-    'https://todo-list-load-balancer-1292925265.ap-south-1.elb.amazonaws.com'
+    'http://todo-list-fe-bucket.s3-website.ap-south-1.amazonaws.com'
 ]
 
 REST_FRAMEWORK = {
