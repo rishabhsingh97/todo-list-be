@@ -116,7 +116,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',  # Example: Allow requests from frontend running on localhost
+    'http://localhost:5173', 
+    'todo-list-load-balancer-1292925265.ap-south-1.elb.amazonaws.com'
 ]
 
 REST_FRAMEWORK = {
