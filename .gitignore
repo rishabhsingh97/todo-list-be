@@ -23,6 +23,8 @@ staticfiles/
 # Ignore environment variables file
 .env
 
+venv
+
 # Ignore Docker Compose file
 docker-compose.yml
 docker-compose.override.yml
