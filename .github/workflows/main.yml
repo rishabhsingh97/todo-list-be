@@ -43,7 +43,7 @@ jobs:
               ${{ secrets.EC2_PRIVATE_USERNAME }}@${{ secrets.EC2_PRIVATE_URL }} << 'EOF'
               # Commands to run on the private server
               cd app/todo-list-be
-              git pull origin master            
+              sudo git pull origin master            
               source venv/bin/activate          
               pip install -r requirements.txt   
               python manage.py migrate          
