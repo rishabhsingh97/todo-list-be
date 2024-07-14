@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import ToDo
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from .models import ToDo
 
 class ToDoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,7 +9,7 @@ class ToDoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
     class Meta:
@@ -17,7 +17,14 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['username', 'password']
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
+        username = validated_data['username']
+        password = validated_data['password']
+
+        existing_user = User.objects.filter(username=username).first()
+        if existing_user:
+            raise serializers.ValidationError("User already exist")
+
+        user = User.objects.create_user(username=username, password=password)
         return user
 
 class UserLoginSerializer(serializers.Serializer):
