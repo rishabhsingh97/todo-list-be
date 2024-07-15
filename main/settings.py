@@ -128,7 +128,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173', 
-    'http://todo-list-fe-bucket.s3-website.ap-south-1.amazonaws.com'
+    'http://todo-list-fe-bucket.s3-website.ap-south-1.amazonaws.com',
+    'https://d20fyln6uen0q8.cloudfront.net'
 ]
 
 REST_FRAMEWORK = {
