@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth import authenticate
@@ -7,10 +7,16 @@ from .models import ToDo
 from .serializers import ToDoSerializer, UserRegistrationSerializer, UserLoginSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
-class ToDoViewSet(viewsets.ModelViewSet):
+class ToDoListAPIView(generics.ListCreateAPIView):
     queryset = ToDo.objects.all()
     serializer_class = ToDoSerializer
     permission_classes = [IsAuthenticated]
+
+class ToDoDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ToDo.objects.all()
+    serializer_class = ToDoSerializer
+    permission_classes = [IsAuthenticated]
+
 
 @api_view(['POST'])
 @permission_classes([AllowAny]) 
@@ -39,14 +45,3 @@ def UserLoginView(request):
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def ToDoDetailView(request, pk):
-    try:
-        todo_item = ToDo.objects.get(pk=pk)
-    except ToDo.DoesNotExist:
-        return Response({'error': 'Todo item does not exist.'}, status=status.HTTP_404_NOT_FOUND)
-
-    serializer = ToDoSerializer(todo_item)
-    return Response(serializer.data)

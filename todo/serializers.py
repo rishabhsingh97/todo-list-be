@@ -3,11 +3,15 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from .models import ToDo
 
+# todo/serializers.py
+
+from rest_framework import serializers
+from .models import ToDo
+
 class ToDoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ToDo
         fields = '__all__'
-
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
